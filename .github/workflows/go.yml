@@ -5,9 +5,9 @@ name: Go
 
 on:
   push:
-    branches: [ "release/Production" ]
+    branches: [ "release/Production", "release/UAT", "release/Development" ]
   pull_request:
-    branches: [ "release/Production" ]
+    branches: [ "release/Production", "release/UAT", "release/Development" ]
 
 jobs:
 
