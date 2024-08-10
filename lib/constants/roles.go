@@ -11,9 +11,9 @@ const (
 )
 
 var roles = map[Role]string{
-	ADMIN:     "Admin User.",
-	USER:      "User.",
-	DEVELOPER: "Developer.",
+	ADMIN:     "Admin",
+	USER:      "User",
+	DEVELOPER: "Developer",
 }
 
 func (r Role) String() (string, error) {

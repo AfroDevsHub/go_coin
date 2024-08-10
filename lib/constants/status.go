@@ -15,11 +15,11 @@ const (
 )
 
 var statuses = map[Status]string{
-	NEW:      "Newly Created.",
-	ACTIVE:   "Actively is in Use.",
-	INACTIVE: "Not Actively in Use.",
-	DISABLED: "Can't be used.",
-	DELETED:  "Has been Deleted.",
+	NEW:      "New",
+	ACTIVE:   "Active",
+	INACTIVE: "Inactive",
+	DISABLED: "Disabled",
+	DELETED:  "Deleted",
 }
 
 func (s Status) String() (string, error) {

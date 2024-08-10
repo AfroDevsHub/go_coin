@@ -8,66 +8,70 @@ import (
 
 	"github.com/dfunani/go_coin/lib/constants"
 	"github.com/dlclark/regexp2"
+	"gorm.io/gorm"
+
 	"github.com/google/uuid"
 )
 
-type card struct {
-	id              uuid.UUID
-	card_id         uuid.UUID
-	card_number     string
-	cvv_number      string
-	card_type       constants.CardType
-	status          constants.Status
-	pin             string
-	expiration_date time.Time
-	salt_value      uuid.UUID
-	created_date    time.Time
-	updated_date    time.Time
+var card_length = 9
+var ccv_length = 3
+
+type Card struct {
+	gorm.Model
+	ID             uuid.UUID
+	CardID         uuid.UUID
+	CardNumber     string
+	CvvNumber      string
+	CardType       constants.CardType
+	Status         constants.Status
+	Pin            string
+	ExpirationDate time.Time
+	SaltValue      uuid.UUID
 }
 
-func (c *card) String() string {
-	return "Card ID: " + c.card_id.String()
+func (c *Card) TableName() string {
+	return "warehouse.cards"
 }
 
-func (c *card) Dict() map[string]interface{} {
+func (c *Card) String() string {
+	return "Card ID: " + c.CardID.String()
+}
+
+func (c *Card) Dict() map[string]interface{} {
 	return map[string]interface{}{
-		"id":              c.id,
-		"card_id":         c.card_id,
-		"card_number":     c.card_number,
-		"cvv_number":      c.cvv_number,
-		"card_type":       c.card_type,
-		"status":          c.status,
-		"pin":             c.pin,
-		"expiration_date": c.expiration_date,
-		"salt_value":      c.salt_value,
-		"created_date":    c.created_date,
-		"updated_date":    c.updated_date,
+		"id":              c.ID,
+		"card_id":         c.CardID,
+		"card_number":     c.CardNumber,
+		"cvv_number":      c.CvvNumber,
+		"card_type":       c.CardType,
+		"status":          c.Status,
+		"pin":             c.Pin,
+		"expiration_date": c.ExpirationDate.Format("06/01"),
+		"salt_value":      c.SaltValue,
 	}
 }
 
-type Card struct{}
+type CardSerialiser struct{}
 
-func (*Card) Create_card(card_type constants.CardType, pin string) (*card, error) {
+func (*CardSerialiser) Create_card(card_type constants.CardType, pin string) (*Card, error) {
 	card_number, err := generate_card_number(card_type)
 	if err != nil {
-		return &card{}, fmt.Errorf("invalid card")
+		return &Card{}, fmt.Errorf("invalid card")
 	}
-	re := regexp2.MustCompile("^\\d{6}$", regexp2.None)
+	re := regexp2.MustCompile(`^\d{6}$`, regexp2.None)
 	if isMatch, _ := re.MatchString(pin); !isMatch {
-		return &card{}, fmt.Errorf("invalid pin")
+		return &Card{}, fmt.Errorf("invalid pin")
 	}
-	return &card{
-		id:              uuid.New(),
-		card_id:         uuid.New(),
-		card_number:     card_number,
-		cvv_number:      generate_cvv_number(),
-		card_type:       card_type,
-		status:          constants.Statuses.ACTIVE,
-		pin:             pin,
-		expiration_date: time.Now().AddDate(5, 0, 0),
-		salt_value:      uuid.New(),
-		created_date:    time.Now(),
-		updated_date:    time.Now(),
+	return &Card{
+		ID:             uuid.New(),
+		CardID:         uuid.New(),
+		CardNumber:     card_number,
+		CvvNumber:      generate_cvv_number(),
+		CardType:       card_type,
+		Status:         constants.Statuses.ACTIVE,
+		Pin:            pin,
+		ExpirationDate: time.Now().AddDate(5, 0, 0),
+		SaltValue:      uuid.New(),
 	}, nil
 }
 
@@ -77,7 +81,8 @@ func generate_card_number(card_type constants.CardType) (string, error) {
 		return "", fmt.Errorf("no card number generated")
 	}
 	generic := ""
-	for range [9]int{} {
+	length := make([]int, card_length)
+	for range length {
 		generic += strconv.Itoa(rand.Intn(9))
 
 	}
@@ -86,7 +91,8 @@ func generate_card_number(card_type constants.CardType) (string, error) {
 
 func generate_cvv_number() string {
 	generic := ""
-	for range [6]int{} {
+	length := make([]int, ccv_length)
+	for range length {
 		generic += strconv.Itoa(rand.Intn(9))
 	}
 	return generic

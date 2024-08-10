@@ -1,29 +1,66 @@
 package warehouse
 
-import "github.com/google/uuid"
+import (
+	"time"
 
-type loginhistory struct {
-	id       uuid.UUID
-	login_id uuid.UUID
+	"github.com/dfunani/go_coin/lib/constants"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+type Loginhistory struct {
+	gorm.Model
+	ID                  uuid.UUID `gorm:"primaryKey"`
+	LoginID             uuid.UUID
+	SessionID           uuid.UUID
+	UserID              uuid.UUID
+	LoginDate           time.Time
+	LoginLocation       constants.Country
+	LoginDevice         string
+	LoginMethod         constants.LoginMethod
+	LoggedIn            bool
+	LogoutDate          *time.Time
+	AuthenticationToken string
 }
 
-func (l *loginhistory) String() string {
-	l.Dict()
-	return "User ID: " + l.login_id.String()
+func (l *Loginhistory) TableName() string {
+	return "warehouse.login_histories"
 }
 
-func (l *loginhistory) Dict() map[string]interface{} {
+func (l *Loginhistory) String() string {
+	return "Login History ID: " + l.LoginID.String()
+}
+
+func (l *Loginhistory) Dict() map[string]interface{} {
 	return map[string]interface{}{
-		"login": l.login_id,
+		"ID":                  l.ID,
+		"LoginID":             l.LoginID,
+		"SessionID":           l.SessionID,
+		"UserID":              l.UserID,
+		"LoginDate":           l.LoginDate,
+		"LoginLocation":       l.LoginLocation,
+		"LoginDevice":         l.LoginDevice,
+		"LoginMethod":         l.LoginMethod,
+		"LoggedIn":            l.LoggedIn,
+		"LogoutDate":          l.LogoutDate,
+		"AuthenticationToken": l.AuthenticationToken,
 	}
 }
 
-type LoginHistory struct{}
+type LoginHistorySerialiser struct{}
 
-func (*LoginHistory) Create_login_history() *loginhistory {
-	return &loginhistory{
-		id:       uuid.New(),
-		login_id: uuid.New(),
+func (*LoginHistorySerialiser) Create_login_history(user_id uuid.UUID, location constants.Country, device string, method constants.LoginMethod, token string) *Loginhistory {
+	return &Loginhistory{
+		ID:                  uuid.New(),
+		LoginID:             uuid.New(),
+		SessionID:           uuid.New(),
+		UserID:              user_id,
+		LoginDate:           time.Now(),
+		LoginLocation:       location,
+		LoginDevice:         device,
+		LoginMethod:         method,
+		LoggedIn:            true,
+		LogoutDate:          nil,
+		AuthenticationToken: token,
 	}
-
 }
