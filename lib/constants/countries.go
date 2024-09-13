@@ -204,7 +204,12 @@ const (
 	ZIMBABWE
 )
 
-var countries = map[Country][]string{
+type TupleCountry struct {
+	Country string
+	Symbol  string
+}
+
+var countries = map[Country]TupleCountry{
 	AFGHANISTAN:                  {"Afghanistan", "AF"},
 	ALBANIA:                      {"Albania", "AL"},
 	ALGERIA:                      {"Algeria", "DZ"},
@@ -404,9 +409,9 @@ var countries = map[Country][]string{
 	ZIMBABWE:                     {"Zimbabwe", "ZW"},
 }
 
-func (c Country) String() ([]string, error) {
+func (c Country) String() (TupleCountry, error) {
 	if value, ok := countries[c]; ok {
 		return value, nil
 	}
-	return []string{"", ""}, fmt.Errorf("invalid country")
+	return TupleCountry{}, fmt.Errorf("invalid country")
 }

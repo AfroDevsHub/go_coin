@@ -1,5 +1,7 @@
 package constants
 
+import "fmt"
+
 type Occupation int
 
 const (
@@ -64,4 +66,11 @@ var occupations = map[Occupation]string{
 	PHARMACIST:          "Pharmacist",
 	SOCIAL_WORKER:       "Social Worker",
 	OTHER_OCCUPATION:    "Other",
+}
+
+func (o Occupation) String() (string, error) {
+	if value, ok := occupations[o]; ok {
+		return value, nil
+	}
+	return "", fmt.Errorf("invalid login method")
 }

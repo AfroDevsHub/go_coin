@@ -5,9 +5,9 @@ import "fmt"
 type Role int
 
 const (
-	ADMIN Role = iota
-	USER
+	USER Role = iota
 	DEVELOPER
+	ADMIN
 )
 
 var roles = map[Role]string{

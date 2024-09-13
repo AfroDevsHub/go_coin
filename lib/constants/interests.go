@@ -1,5 +1,7 @@
 package constants
 
+import "fmt"
+
 type Interest int
 
 const (
@@ -240,4 +242,11 @@ var interests = map[Interest]string{
 	MEAD:                    "Mead",
 	SODA:                    "Soda",
 	JUICE:                   "Juice",
+}
+
+func (i Interest) String() (string, error) {
+	if value, ok := interests[i]; ok {
+		return value, nil
+	}
+	return "", fmt.Errorf("invalid login method")
 }

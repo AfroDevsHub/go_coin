@@ -22,3 +22,6 @@ func (c CardType) String() (string, error) {
 	}
 	return "", fmt.Errorf("invalid card type")
 }
+
+var CARD_LENGTH = 9
+var CCV_LENGTH = 3

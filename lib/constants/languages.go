@@ -1,5 +1,7 @@
 package constants
 
+import "fmt"
+
 type Language int
 
 const (
@@ -90,12 +92,12 @@ const (
 	ZULU
 )
 
-type tupleLanguage struct {
-	language string
-	symbol   string
+type TupleLanguage struct {
+	Language string
+	Symbol   string
 }
 
-var languages = map[Language]tupleLanguage{
+var languages = map[Language]TupleLanguage{
 	AFRIKAANS:        {"Afrikaans", "af"},
 	ALBANIAN:         {"Albanian", "sq"},
 	AMHARIC:          {"Amharic", "am"},
@@ -181,4 +183,11 @@ var languages = map[Language]tupleLanguage{
 	YIDDISH:          {"Yiddish", "yi"},
 	YORUBA:           {"Yoruba", "yo"},
 	ZULU:             {"Zulu", "zu"},
+}
+
+func (l Language) String() (TupleLanguage, error) {
+	if value, ok := languages[l]; ok {
+		return value, nil
+	}
+	return TupleLanguage{}, fmt.Errorf("invalid login method")
 }

@@ -3,24 +3,23 @@ package warehouse
 import (
 	"time"
 
-	"github.com/dfunani/go_coin/lib/constants"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Loginhistory struct {
+	ID                  uuid.UUID  `gorm:"primaryKey"`
+	LoginID             uuid.UUID  `json:"login_id" gorm:"type:uuid;uniqueIndex;not null"`
+	SessionID           uuid.UUID  `json:"session_id" gorm:"type:uuid;uniqueIndex;not null"`
+	UserID              uuid.UUID  `json:"user_id" gorm:"type:uuid;uniqueIndex;not null"`
+	LoginDate           time.Time  `json:"login_date" gorm:"type:timestamp;not null"`
+	LoginLocation       string     `json:"login_location" gorm:"type:string;not null"`
+	LoginDevice         string     `json:"login_device" gorm:"type:string;not null"`
+	LoginMethod         string     `json:"login_method" gorm:"type:string;not null"`
+	LoggedIn            bool       `json:"logged_in" gorm:"type:boolean;not null"`
+	LogoutDate          *time.Time `json:"logout_date" gorm:"type:timestamp"`
+	AuthenticationToken string     `json:"authentication_token" gorm:"type:string;not null"`
 	gorm.Model
-	ID                  uuid.UUID `gorm:"primaryKey"`
-	LoginID             uuid.UUID
-	SessionID           uuid.UUID
-	UserID              uuid.UUID
-	LoginDate           time.Time
-	LoginLocation       constants.Country
-	LoginDevice         string
-	LoginMethod         constants.LoginMethod
-	LoggedIn            bool
-	LogoutDate          *time.Time
-	AuthenticationToken string
 }
 
 func (l *Loginhistory) TableName() string {
@@ -29,38 +28,4 @@ func (l *Loginhistory) TableName() string {
 
 func (l *Loginhistory) String() string {
 	return "Login History ID: " + l.LoginID.String()
-}
-
-func (l *Loginhistory) Dict() map[string]interface{} {
-	return map[string]interface{}{
-		"ID":                  l.ID,
-		"LoginID":             l.LoginID,
-		"SessionID":           l.SessionID,
-		"UserID":              l.UserID,
-		"LoginDate":           l.LoginDate,
-		"LoginLocation":       l.LoginLocation,
-		"LoginDevice":         l.LoginDevice,
-		"LoginMethod":         l.LoginMethod,
-		"LoggedIn":            l.LoggedIn,
-		"LogoutDate":          l.LogoutDate,
-		"AuthenticationToken": l.AuthenticationToken,
-	}
-}
-
-type LoginHistorySerialiser struct{}
-
-func (*LoginHistorySerialiser) Create_login_history(user_id uuid.UUID, location constants.Country, device string, method constants.LoginMethod, token string) *Loginhistory {
-	return &Loginhistory{
-		ID:                  uuid.New(),
-		LoginID:             uuid.New(),
-		SessionID:           uuid.New(),
-		UserID:              user_id,
-		LoginDate:           time.Now(),
-		LoginLocation:       location,
-		LoginDevice:         device,
-		LoginMethod:         method,
-		LoggedIn:            true,
-		LogoutDate:          nil,
-		AuthenticationToken: token,
-	}
 }

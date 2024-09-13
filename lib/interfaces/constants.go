@@ -5,6 +5,7 @@ type Enum interface {
 }
 
 type Model interface {
+	TableName() string
 	String() string
 	Dict() map[string]interface{}
 }

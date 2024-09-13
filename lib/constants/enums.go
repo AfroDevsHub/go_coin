@@ -1,3 +1,5 @@
+/*Constants: Application Enumerations.*/
+
 package constants
 
 var Statuses = struct {
