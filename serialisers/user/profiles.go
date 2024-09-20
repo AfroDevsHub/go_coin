@@ -90,3 +90,21 @@ func (*UserProfileSerialiser) CreateUserProfile(db *gorm.DB, account_id uuid.UUI
 		Status:           valid_status,
 	})
 }
+
+func (*UserProfileSerialiser) UpdateUserProfile(db *gorm.DB, id uuid.UUID, user_profile_data map[string]interface{}) (string, error) {
+	var user_profile users.UserProfile
+	err := db.Model(&users.UserProfile{}).First(&user_profile, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(user_profile).Updates(user_profile_data)
+	return user_profile.String(), nil
+}
+
+func (*UserProfileSerialiser) DeleteUserProfile(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&users.UserProfile{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
+}

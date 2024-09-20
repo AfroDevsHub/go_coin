@@ -86,5 +86,8 @@ func main() {
 	card, _ := card_serialiser.ReadCard(db, random_card.CardID)
 	log.Println(card)
 
+	res, _ := user_serialiser.DeleteUser(db, uuid.MustParse(("97a20ff2-4b35-4b1e-8403-e9e9de019ad1")))
+	log.Println((res))
+
 	os.Exit(0)
 }

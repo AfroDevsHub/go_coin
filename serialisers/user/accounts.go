@@ -6,6 +6,7 @@ import (
 	DATABASE "github.com/dfunani/go_coin/database"
 	CONSTANTS "github.com/dfunani/go_coin/lib/constants"
 	USERS "github.com/dfunani/go_coin/models/user"
+	users "github.com/dfunani/go_coin/models/user"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -49,4 +50,22 @@ func (*AccountSerialiser) CreateAccount(db *gorm.DB, user_id uuid.UUID) (string,
 		UserID:    user_id,
 		Status:    status,
 	})
+}
+
+func (*AccountSerialiser) UpdateAccount(db *gorm.DB, id uuid.UUID, account_data map[string]interface{}) (string, error) {
+	var account USERS.Account
+	err := db.Model(&USERS.Account{}).First(&account, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(account).Updates(account_data)
+	return account.String(), nil
+}
+
+func (*AccountSerialiser) DeleteAccount(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&users.User{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
 }

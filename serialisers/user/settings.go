@@ -77,3 +77,21 @@ func (*SettingsProfileSerialiser) CreateSettingsProfile(db *gorm.DB, account_id 
 		ThemePreference:             valid_theme_preference,
 	})
 }
+
+func (*SettingsProfileSerialiser) UpdateSettingsProfile(db *gorm.DB, id uuid.UUID, settings_profile_data map[string]interface{}) (string, error) {
+	var settings_profile USERS.SettingsProfile
+	err := db.Model(&USERS.SettingsProfile{}).First(&settings_profile, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(settings_profile).Updates(settings_profile_data)
+	return settings_profile.String(), nil
+}
+
+func (*SettingsProfileSerialiser) DeleteSettingsProfile(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&USERS.SettingsProfile{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
+}

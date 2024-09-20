@@ -76,3 +76,21 @@ func (*UserSerialiser) CreateUser(db *gorm.DB, email string, password string, ro
 		Role:      valid_role,
 	})
 }
+
+func (*UserSerialiser) UpdateUser(db *gorm.DB, id uuid.UUID, user_data map[string]interface{}) (string, error) {
+	var user USERS.User
+	err := db.Model(&USERS.User{}).First(&user, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(user).Updates(user_data)
+	return user.String(), nil
+}
+
+func (*UserSerialiser) DeleteUser(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&USERS.User{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
+}

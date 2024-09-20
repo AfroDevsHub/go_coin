@@ -52,3 +52,21 @@ func (*PaymentProfileSerialiser) CreatePaymentProfile(db *gorm.DB, account_id uu
 		Balance:     0.0,
 	})
 }
+
+func (*PaymentProfileSerialiser) UpdatePaymentProfile(db *gorm.DB, id uuid.UUID, payment_profile_data map[string]interface{}) (string, error) {
+	var payment_profile users.PaymentProfile
+	err := db.Model(&users.PaymentProfile{}).First(&payment_profile, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(payment_profile).Updates(payment_profile_data)
+	return payment_profile.String(), nil
+}
+
+func (*PaymentProfileSerialiser) DeletePaymentProfile(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&users.PaymentProfile{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
+}

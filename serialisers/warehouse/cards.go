@@ -57,6 +57,24 @@ func (*CardSerialiser) CreateCard(db *gorm.DB, card_type constants.CardType, pin
 	})
 }
 
+func (*CardSerialiser) UpdateCard(db *gorm.DB, id uuid.UUID, card_data map[string]interface{}) (string, error) {
+	var card warehouse.Card
+	err := db.Model(&warehouse.Card{}).First(&card, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(card).Updates(card_data)
+	return card.String(), nil
+}
+
+func (*CardSerialiser) DeleteCard(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&warehouse.Card{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
+}
+
 func generate_card_number(card_type constants.CardType) (string, error) {
 	value, err := card_type.String()
 	if err != nil {

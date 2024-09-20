@@ -46,3 +46,21 @@ func (*LoginHistorySerialiser) Create_login_history(db *gorm.DB, user_id uuid.UU
 		AuthenticationToken: token,
 	})
 }
+
+func (*LoginHistorySerialiser) UpdateLoginHistory(db *gorm.DB, id uuid.UUID, login_history_data map[string]interface{}) (string, error) {
+	var login_history warehouse.Loginhistory
+	err := db.Model(&warehouse.Loginhistory{}).First(&login_history, id).Error
+	if err != nil {
+		return "", err
+	}
+	db.Model(login_history).Updates(login_history_data)
+	return login_history.String(), nil
+}
+
+func (*LoginHistorySerialiser) DeleteLoginHistory(db *gorm.DB, id uuid.UUID) (string, error) {
+	err := db.Delete(&warehouse.Loginhistory{}, id).Error
+	if err != nil {
+		return "", err
+	}
+	return id.String() + " Deleted", nil
+}
