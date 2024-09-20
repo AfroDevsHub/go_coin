@@ -4,6 +4,7 @@ import (
 	"os"
 
 	MODELS "github.com/dfunani/go_coin/models"
+	BLOCKCHAIN "github.com/dfunani/go_coin/models/blockchain"
 	USERS "github.com/dfunani/go_coin/models/user"
 	WAREHOUSE "github.com/dfunani/go_coin/models/warehouse"
 )
@@ -39,4 +40,7 @@ var models = []MODELS.Model{
 	&WAREHOUSE.Card{},
 	&USERS.UserProfile{},
 	&USERS.SettingsProfile{},
+	&BLOCKCHAIN.Block{},
+	&BLOCKCHAIN.Transaction{},
+	&BLOCKCHAIN.Contract{},
 }

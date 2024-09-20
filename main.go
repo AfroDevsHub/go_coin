@@ -11,6 +11,7 @@ import (
 	DATABASE "github.com/dfunani/go_coin/database"
 	users "github.com/dfunani/go_coin/models/user"
 	"github.com/dfunani/go_coin/models/warehouse"
+	"github.com/dfunani/go_coin/serialisers/blockchain"
 	serialisers "github.com/dfunani/go_coin/serialisers/user"
 	w_serialisers "github.com/dfunani/go_coin/serialisers/warehouse"
 
@@ -89,5 +90,8 @@ func main() {
 	res, _ := user_serialiser.DeleteUser(db, uuid.MustParse(("97a20ff2-4b35-4b1e-8403-e9e9de019ad1")))
 	log.Println((res))
 
+	block_serialiser := blockchain.BlockSerialiser{}
+	block, _ := block_serialiser.CreateBlock(db, nil, nil, nil, nil)
+	log.Println(block)
 	os.Exit(0)
 }

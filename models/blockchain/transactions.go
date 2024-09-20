@@ -1,65 +1,32 @@
 package blockchain
 
 import (
-	"time"
-
+	users "github.com/dfunani/go_coin/models/user"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-type transaction struct {
-	id                 uuid.UUID
-	transaction_id     uuid.UUID
-	sender             uuid.UUID
-	receiver           uuid.UUID
-	amount             float64
-	title              string
-	description        string
-	sender_signiture   string
-	receiver_signiture string
-	transaction_status string
-	salt_value         uuid.UUID
-	created_date       time.Time
-	updated_date       time.Time
+type Transaction struct {
+	ID                uuid.UUID            `json:"id" gorm:"type=uuid;not null"`
+	TransactionID     uuid.UUID            `json:"transaction_id" gorm:"type=uuid;not null"`
+	SenderID          uuid.UUID            `json:"sender" gorm:"type=uuid;not null"`
+	ReceiverID        uuid.UUID            `json:"receiver" gorm:"type=uuid;not null"`
+	Title             string               `json:"title" gorm:"type=string;not null"`
+	Description       string               `json:"description" gorm:"type=string;not null"`
+	SenderSigniture   string               `json:"sender_signiture" gorm:"type=string;not null"`
+	ReceiverSigniture string               `json:"receiver_signiture" gorm:"type=string;not null"`
+	TransactionStatus string               `json:"transaction_status" gorm:"type=string;not null"`
+	Amount            float32              `json:"amount" gorm:"not null"`
+	Salt_value        uuid.UUID            `json:"salt_value" gorm:"type=uuid;not null"`
+	Sender            users.PaymentProfile `gorm:"foreignKey:SenderID;references:ID"`
+	Receiver          users.PaymentProfile `gorm:"foreignKey:ReceiverID;references:ID"`
+	gorm.Model
 }
 
-func (t *transaction) String() string {
-	return "Transaction ID: " + t.transaction_id.String()
+func (*Transaction) TableName() string {
+	return "blockchain.transactions"
 }
 
-func (t *transaction) Dict() map[string]interface{} {
-	return map[string]interface{}{
-		"id":                 t.id,
-		"transaction_id":     t.transaction_id,
-		"sender":             t.sender,
-		"receiver":           t.receiver,
-		"amount":             t.amount,
-		"title":              t.title,
-		"description":        t.description,
-		"sender_signiture":   t.sender_signiture,
-		"receiver_signiture": t.receiver_signiture,
-		"transaction_status": t.transaction_status,
-		"salt_value":         t.salt_value,
-		"created_date":       t.created_date,
-		"updated_date":       t.updated_date,
-	}
-}
-
-type Transaction struct{}
-
-func (t *Transaction) create_transaction() (*transaction, error) {
-	return &transaction{
-		uuid.New(),
-		uuid.New(),
-		uuid.New(),
-		uuid.New(),
-		1.02,
-		"String",
-		"String",
-		"String",
-		"String",
-		"String",
-		uuid.New(),
-		time.Now(),
-		time.Now(),
-	}, nil
+func (t *Transaction) String() string {
+	return "Transaction ID: " + t.TransactionID.String()
 }

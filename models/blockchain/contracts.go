@@ -1,65 +1,32 @@
 package blockchain
 
 import (
-	"time"
-
+	users "github.com/dfunani/go_coin/models/user"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-type contract struct {
-	id                   uuid.UUID
-	contract_id          uuid.UUID
-	contractor           uuid.UUID
-	contractee           uuid.UUID
-	amount               float64
-	title                string
-	description          string
-	contractor_signiture string
-	contractee_signiture string
-	contract_status      string
-	salt_value           uuid.UUID
-	created_date         time.Time
-	updated_date         time.Time
+type Contract struct {
+	ID                  uuid.UUID            `json:"id" gorm:"type=uuid;not null"`
+	ContractID          uuid.UUID            `json:"contract_id" gorm:"type=uuid;not null"`
+	ContractorID        uuid.UUID            `json:"contractor" gorm:"type=uuid;not null"`
+	ContracteeID        uuid.UUID            `json:"contractee" gorm:"type=uuid;not null"`
+	Title               string               `json:"title" gorm:"type=string;not null"`
+	Description         string               `json:"description" gorm:"type=string;not null"`
+	ContractorSigniture string               `json:"contractor_signiture" gorm:"type=string;not null"`
+	ContracteeSigniture string               `json:"contractee_signiture" gorm:"type=string;not null"`
+	ContractStatus      string               `json:"contract_status" gorm:"type=string;not null"`
+	ContractData        string               `json:"amount" gorm:"not null"`
+	Salt_value          uuid.UUID            `json:"salt_value" gorm:"type=uuid;not null"`
+	Contractor          users.PaymentProfile `gorm:"foreignKey:ContractorID;references:ID"`
+	Contractee          users.PaymentProfile `gorm:"foreignKey:ContracteeID;references:ID"`
+	gorm.Model
 }
 
-func (c *contract) String() string {
-	return "Contract ID: " + c.contract_id.String()
+func (*Contract) TableName() string {
+	return "blockchain.contracts"
 }
 
-func (c *contract) Dict() map[string]interface{} {
-	return map[string]interface{}{
-		"id":                   c.id,
-		"contract_id":          c.contract_id,
-		"contractor":           c.contractor,
-		"contractee":           c.contractee,
-		"amount":               c.amount,
-		"title":                c.title,
-		"description":          c.description,
-		"contractor_signiture": c.contractor_signiture,
-		"contractee_signiture": c.contractee_signiture,
-		"contract_status":      c.contract_status,
-		"salt_value":           c.salt_value,
-		"created_date":         c.created_date,
-		"updated_date":         c.updated_date,
-	}
-}
-
-type Contract struct{}
-
-func (c *Contract) create_contract() (*contract, error) {
-	return &contract{
-		uuid.New(),
-		uuid.New(),
-		uuid.New(),
-		uuid.New(),
-		1.02,
-		"String",
-		"String",
-		"String",
-		"String",
-		"String",
-		uuid.New(),
-		time.Now(),
-		time.Now(),
-	}, nil
+func (c *Contract) String() string {
+	return "Contract ID: " + c.ContractID.String()
 }

@@ -9,8 +9,8 @@ var Statuses = struct {
 	DISABLED Status
 	DELETED  Status
 }{
-	NEW:      NEW,
-	ACTIVE:   ACTIVE,
+	NEW: NEW,
+	// ACTIVE:   ACTIVE,
 	INACTIVE: INACTIVE,
 	DISABLED: DISABLED,
 	DELETED:  DELETED,
