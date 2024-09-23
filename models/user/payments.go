@@ -16,6 +16,10 @@ type PaymentProfile struct {
 	Status      string          `json:"status" gorm:"type:string;not null"`
 	Balance     float64         `json:"balance" gorm:"not null;default:0.00"`
 	Card        *warehouse.Card `gorm:"references:ID"`
+	// Payments    *[]blockchain.Transaction `gorm:"foreignKey:SenderID;references:ID"`
+	// Receipts    *[]blockchain.Transaction `gorm:"foreignKey:ReceiverID;references:ID"`
+	// Engagements *[]blockchain.Contract    `gorm:"foreignKey:ReceiverID;references:ID"`
+	// Contracts   *[]blockchain.Contract    `gorm:"foreignKey:ReceiverID;references:ID"`
 	gorm.Model
 }
 

@@ -87,11 +87,17 @@ func main() {
 	card, _ := card_serialiser.ReadCard(db, random_card.CardID)
 	log.Println(card)
 
-	res, _ := user_serialiser.DeleteUser(db, uuid.MustParse(("97a20ff2-4b35-4b1e-8403-e9e9de019ad1")))
-	log.Println((res))
-
 	block_serialiser := blockchain.BlockSerialiser{}
 	block, _ := block_serialiser.CreateBlock(db, nil, nil, nil, nil)
 	log.Println(block)
+
+	contract_serialiser := blockchain.ContractSerialiser{}
+	contract, _ := contract_serialiser.CreateContract(db, uuid.MustParse("c903778a-241e-4f2a-927e-cd4b04f1e304"), uuid.MustParse("c903778a-241e-4f2a-927e-cd4b04f1e304"), "Testing", "Testing 123", "50")
+	log.Println(contract)
+
+	transaction_serialiser := blockchain.TransactionSerialiser{}
+	transaction, _ := transaction_serialiser.CreateTransaction(db, uuid.MustParse("c903778a-241e-4f2a-927e-cd4b04f1e304"), uuid.MustParse("c903778a-241e-4f2a-927e-cd4b04f1e304"), "Testing", "Testing 123", 50)
+	log.Println(transaction)
+
 	os.Exit(0)
 }
