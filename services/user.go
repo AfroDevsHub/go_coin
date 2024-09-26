@@ -3,8 +3,10 @@ package services
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/dfunani/go_coin/lib/utils"
 	UTILS "github.com/dfunani/go_coin/lib/utils"
 	USERS "github.com/dfunani/go_coin/models/user"
 	WAREHOUSE "github.com/dfunani/go_coin/models/warehouse"
@@ -104,7 +106,10 @@ func RegisterPayment(db *gorm.DB, request *UserPaymentRequest) (string, error) {
 
 func Login(db *gorm.DB, request *UserServiceRequest) (string, error) {
 	var user []USERS.User
-	db.Model(&USERS.User{}).Find(&user, USERS.User{Email: request.Email, Password: request.Password})
+	secret, _ := os.LookupEnv("SECRET")
+	email, _ := utils.Encrypt([]byte(request.Email), []byte(utils.GenerateHash(secret)))
+	password := utils.GenerateHash(request.Password)
+	db.Model(&USERS.User{}).Find(&user, USERS.User{Email: email, Password: password})
 	if len(user) != 1 {
 		return "", fmt.Errorf("invalid user login")
 	}

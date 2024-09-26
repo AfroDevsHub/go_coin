@@ -3,9 +3,12 @@ package serialisers
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	DATABASE "github.com/dfunani/go_coin/database"
 	CONSTANTS "github.com/dfunani/go_coin/lib/constants"
+	"github.com/dfunani/go_coin/lib/utils"
 	UTILS "github.com/dfunani/go_coin/lib/utils"
 	USERS "github.com/dfunani/go_coin/models/user"
 	"github.com/google/uuid"
@@ -65,12 +68,19 @@ func (*UserSerialiser) CreateUser(db *gorm.DB, email string, password string, ro
 	if valid_role, err = role.String(); err != nil {
 		return "", err
 	}
+	secret, _ := os.LookupEnv("SECRET")
+	encrypted_email, err := utils.Encrypt([]byte(email), []byte(utils.GenerateHash(secret)))
+	if err != nil {
+		return "", err
+	}
+	hash_password := utils.GenerateHash(password)
+	log.Println(encrypted_email, hash_password)
 
 	return DATABASE.CreateModel(db, &USERS.User{
 		ID:        uuid.New(),
 		UserID:    uuid.New(),
-		Email:     email,
-		Password:  password,
+		Email:     encrypted_email,
+		Password:  hash_password,
 		Status:    valid_status,
 		SaltValue: uuid.New(),
 		Role:      valid_role,
