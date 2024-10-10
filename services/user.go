@@ -9,6 +9,7 @@ import (
 	"github.com/dfunani/go_coin/lib/utils"
 	UTILS "github.com/dfunani/go_coin/lib/utils"
 	USERS "github.com/dfunani/go_coin/models/user"
+	"github.com/dfunani/go_coin/models/warehouse"
 	WAREHOUSE "github.com/dfunani/go_coin/models/warehouse"
 	USER_SERIALISERS "github.com/dfunani/go_coin/serialisers/user"
 	WAREHOUSE_SERIALISERS "github.com/dfunani/go_coin/serialisers/warehouse"
@@ -109,10 +110,13 @@ func Login(db *gorm.DB, request *UserServiceRequest) (string, error) {
 	secret, _ := os.LookupEnv("SECRET")
 	email, _ := utils.Encrypt([]byte(request.Email), []byte(utils.GenerateHash(secret)))
 	password := utils.GenerateHash(request.Password)
+	log.Println(email, password)
 	db.Model(&USERS.User{}).Find(&user, USERS.User{Email: email, Password: password})
 	if len(user) != 1 {
 		return "", fmt.Errorf("invalid user login")
 	}
+	db.Model(&warehouse.Loginhistory{}).Where(warehouse.Loginhistory{UserID: user[0].ID}).Updates(map[string]interface{}{"LoggedIn": false})
+
 	login_history_serialiser := WAREHOUSE_SERIALISERS.LoginHistorySerialiser{}
 	login, err := login_history_serialiser.Create_login_history(db, user[0].ID, request.Location, request.Device, request.Method, request.Token)
 	if err != nil {

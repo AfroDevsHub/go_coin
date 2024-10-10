@@ -4,6 +4,7 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 
@@ -11,16 +12,13 @@ import (
 	"github.com/dfunani/go_coin/lib/constants"
 	serialisers "github.com/dfunani/go_coin/serialisers/user"
 	"github.com/dfunani/go_coin/services"
-	"github.com/google/uuid"
-	"golang.org/x/exp/rand"
-
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	godotenv.Load()
 	db := DATABASE.SetupDatabase()
-	number := rand.Intn(uuid.Max.ClockSequence())
+	number := rand.Intn(1000)
 	email := "delali" + strconv.Itoa(number) + "@funani.co.za"
 	password := "DF@8_letters"
 	log.Println(email, password)
@@ -31,6 +29,5 @@ func main() {
 		Password: password,
 	}
 	log.Println(services.Login(db, &request))
-
 	os.Exit(0)
 }

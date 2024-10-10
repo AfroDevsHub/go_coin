@@ -3,10 +3,8 @@ package utils
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"io"
 )
 
 func GenerateHash(text string) string {
@@ -26,9 +24,9 @@ func Encrypt(data []byte, salt []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	nonce_instance := make([]byte, gcm_instance.NonceSize())
-	_, _ = io.ReadFull(rand.Reader, nonce_instance)
-	encrypted_data := gcm_instance.Seal(nonce_instance, nonce_instance, data, nil)
+	nonce := salt[:gcm_instance.NonceSize()]
+	encrypted_data := gcm_instance.Seal(nonce, nonce, data, nil)
+	// combined := append(nonce, encrypted_data...)
 	return hex.EncodeToString(encrypted_data), nil
 }
 
@@ -43,8 +41,8 @@ func Decrypt(data string, salt []byte) (string, error) {
 		return "", err
 	}
 	decoded, _ := hex.DecodeString(data)
-	nonce, ciphered_text := decoded[:gcm_instance.NonceSize()], decoded[gcm_instance.NonceSize():]
-	encrypted_data, err := gcm_instance.Open(nil, nonce, ciphered_text, nil)
+	ciphered_text := decoded[gcm_instance.NonceSize():]
+	encrypted_data, err := gcm_instance.Open(nil, decoded[:gcm_instance.NonceSize()], ciphered_text, nil)
 	if err != nil {
 		return "", err
 	}

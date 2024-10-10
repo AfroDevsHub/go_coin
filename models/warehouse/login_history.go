@@ -11,7 +11,7 @@ type Loginhistory struct {
 	ID                  uuid.UUID  `gorm:"primaryKey"`
 	LoginID             uuid.UUID  `json:"login_id" gorm:"type:uuid;uniqueIndex;not null"`
 	SessionID           uuid.UUID  `json:"session_id" gorm:"type:uuid;uniqueIndex;not null"`
-	UserID              uuid.UUID  `json:"user_id" gorm:"type:uuid;uniqueIndex;not null"`
+	UserID              uuid.UUID  `json:"user_id" gorm:"type:uuid;not null"`
 	LoginDate           time.Time  `json:"login_date" gorm:"type:timestamp;not null"`
 	LoginLocation       string     `json:"login_location" gorm:"type:string;not null"`
 	LoginDevice         string     `json:"login_device" gorm:"type:string;not null"`
