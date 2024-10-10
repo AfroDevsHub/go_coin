@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/dfunani/go_coin/database"
 	"github.com/dfunani/go_coin/lib/constants"
@@ -33,6 +34,7 @@ func (b *BlockSerialiser) CreateBlock(db *gorm.DB, transaction_id *uuid.UUID, co
 	} else {
 		block_type, _ = constants.TRANSACTION.String()
 	}
+	log.Println(contract_id, transaction_id)
 	return database.CreateModel(db, &blockchain.Block{
 		ID:              uuid.New(),
 		BlockID:         uuid.New(),
